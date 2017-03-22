@@ -1,0 +1,53 @@
+
+#include "stdafx.h"
+#include<iostream>
+#include<conio.h>
+using namespace std;
+
+class Battle_template {
+protected:
+	int hp,dmg,def,speed;
+	virtual void move() = 0;
+	virtual void hit(int dmg) = 0;
+	virtual void showstats() = 0;
+public:
+	virtual ~Battle_template() = 0 {}
+	Battle_template() {
+		hp = dmg = def = speed = 0;
+	}
+	void setstats(int hp,int dmg,int def,int spd) {
+		this->hp = hp;
+		this->dmg = dmg;
+		this->def = def;
+		this->speed = spd;
+	}
+};
+
+class player:public Battle_template {
+public:
+	int space=300;
+	player() {
+		setstats(100, 9, 5, 3);
+	}
+	void move()  {
+		space -= speed;
+		cout << "You travelled " << speed << " feet and now you are " << space << " feet from destination" << endl;
+	}
+	void hit(int dmg) {
+		this->hp = hp - dmg + def;
+		cout << "You take " << dmg << " damage and block " << def << " of it!" << endl;
+	}
+	void showstats() {
+		cout << "Current hp:"<< hp << endl;
+	}
+};
+int main()
+{
+	player knight;
+	knight.showstats();
+	knight.hit(35);
+	knight.showstats();
+	knight.move();
+	_getch();
+    return 0;
+}
