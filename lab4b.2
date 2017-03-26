@@ -1,0 +1,75 @@
+#include "stdafx.h"
+#include<iostream>
+#include<conio.h>
+#include<thread>
+#include<Windows.h>
+
+using namespace std;
+
+HANDLE hEvent;
+hEvent = CreateEvent(0,
+	true,
+	false,
+	L"MyEvent1");
+
+class Battle_template {
+protected:
+	int hp, dmg, def, speed;
+	virtual void move() = 0;
+	virtual void hit(int dmg) = 0;
+	virtual void showstats() = 0;
+public:
+	virtual ~Battle_template() = 0 {}
+	Battle_template() {
+		hp = dmg = def = speed = 0;
+	}
+	void setstats(int hp, int dmg, int def, int spd) {
+		this->hp = hp;
+		this->dmg = dmg;
+		this->def = def;
+		this->speed = spd;
+	}
+};
+
+class npc :public Battle_template {
+public:
+	int space = 300;
+	npc() {
+	}
+	void move() {
+		space -= speed;
+		cout << "You travelled " << speed << " feet and now you are " << space << " feet from destination" << endl;
+	}
+	void hit(int dmg) {
+		this->hp = hp - dmg + def;
+		cout << "You take " << dmg << " damage and block " << def << " of it!" << endl;
+	}
+	void showstats() {
+		cout << "Current hp:" << hp << endl;
+	}
+	
+};
+
+void test(npc *p) {
+	cout << "Thread in progress..." << endl;
+	cout << p << endl;
+}
+    
+int main()
+{
+	npc knight;
+	knight.setstats(200, 3, 4, 20);
+	npc elf;
+	elf.setstats(150, 5, 2, 25);
+	npc *p;
+	p = &knight;
+	thread thr(test, p);
+	thr.join();
+	p = &elf;
+	thread thr2(test, p);
+	thr2.join();
+
+	_getch();
+	return 0;
+}
+
