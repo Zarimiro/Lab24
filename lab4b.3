@@ -1,0 +1,30 @@
+#include<Windows.h>
+#include<iostream>
+#include<conio.h>
+using namespace std;
+
+
+int main()
+{
+	HANDLE hEvent;
+	hEvent = OpenEvent(
+		EVENT_ALL_ACCESS,
+		TRUE,
+		L"MyEvent1"
+	);
+	if (hEvent == 0) {
+		cout << "Error." << endl;
+		_getch();
+		return 0;
+	}
+	cout << "Press any key to start threads in 1st application..." << endl;
+	_getch();
+	SetEvent(hEvent);
+	cout << "Press any key to stop threads in 1st application..." << endl;
+	_getch();
+	ResetEvent(hEvent);
+	cout << "Press any key to close 2nd application..." << endl;
+	_getch();
+    return 0;
+}
+
