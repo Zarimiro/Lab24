@@ -1,30 +1,47 @@
+#include"stdafx.h"
 #include<Windows.h>
 #include<iostream>
 #include<conio.h>
 using namespace std;
 
+HANDLE hEvent = OpenEvent(
+	EVENT_ALL_ACCESS,
+	TRUE,
+	L"MyEvent1"
+);
+
+void Update() {
+	unsigned char input = _getch();
+	input = tolower(input);
+	input = tolower(input);
+	switch (input) {
+	case 'f': {
+		SetEvent(hEvent);
+		break;
+	}
+	case 'x': {
+		ResetEvent(hEvent);
+		break;
+	}
+	case 't': {
+		exit(1);
+	}
+	}
+}
 
 int main()
 {
-	HANDLE hEvent;
-	hEvent = OpenEvent(
-		EVENT_ALL_ACCESS,
-		TRUE,
-		L"MyEvent1"
-	);
 	if (hEvent == 0) {
 		cout << "Error." << endl;
 		_getch();
 		return 0;
 	}
-	cout << "Press any key to start threads in 1st application..." << endl;
-	_getch();
-	SetEvent(hEvent);
-	cout << "Press any key to stop threads in 1st application..." << endl;
-	_getch();
-	ResetEvent(hEvent);
-	cout << "Press any key to close 2nd application..." << endl;
-	_getch();
-    return 0;
+	cout << "Press f to start threads in 1st application..." << endl;
+	cout << "Press x to stop threads in 1st application..." << endl;
+	cout << "Press t to close 2nd application..." << endl;
+	do {
+		Update();
+	} while (1);
+	
 }
 
