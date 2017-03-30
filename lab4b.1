@@ -57,11 +57,10 @@ int main()
 	npc elf;
 	elf.setstats(150, 5, 2, 25);
 	npc *p;
-	p = &knight;
-	thread thr(test, p);
+	
+	thread thr(test, &knight);
+	thread thr2(test, &elf);
 	thr.join();
-	p = &elf;
-	thread thr2(test, p);
 	thr2.join();
 
 	_getch();
