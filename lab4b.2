@@ -3,14 +3,17 @@
 #include<conio.h>
 #include<thread>
 #include<Windows.h>
+#include<ctime>
+#include<mutex>
 
 using namespace std;
 
-HANDLE hEvent;
-hEvent = CreateEvent(0,
+
+HANDLE hEvent= CreateEvent(0,
 	true,
 	false,
 	L"MyEvent1");
+mutex locker;
 
 class Battle_template {
 protected:
@@ -51,8 +54,17 @@ public:
 };
 
 void test(npc *p) {
-	cout << "Thread in progress..." << endl;
-	cout << p << endl;
+	WaitForSingleObject(hEvent, INFINITE);
+	while (WaitForSingleObject(hEvent,0)==WAIT_OBJECT_0) {
+		locker.lock();
+		cout << "Thread in progress..." << endl;
+		cout << p << endl;
+		Sleep(3000);
+		locker.unlock();
+	}
+	
+
+	
 }
     
 int main()
@@ -62,14 +74,12 @@ int main()
 	npc elf;
 	elf.setstats(150, 5, 2, 25);
 	npc *p;
-	p = &knight;
-	thread thr(test, p);
+	
+	thread thr(test, &knight);
+	thread thr2(test, &elf);
 	thr.join();
-	p = &elf;
-	thread thr2(test, p);
 	thr2.join();
 
 	_getch();
 	return 0;
 }
-
